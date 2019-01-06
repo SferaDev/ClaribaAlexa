@@ -1,0 +1,306 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "description": "Clariba's genie is a Business Intelligence (BI) smart assistant built for Amazon's Alexa. This API exposes a set of endpoints that the Voice-enabled app uses and that are useful for Big Data analysis.",
+        "version": "0.1.0",
+        "title": "Clariba's Genie"
+    },
+    "servers": [
+        {
+            "url": "https://clariba-genie.herokuapp.com/api"
+        }
+    ],
+    "tags": [
+        {
+            "name": "Base"
+        },
+        {
+            "name": "Indicators",
+            "description": "Operations with indicators"
+        },
+        {
+            "name": "Dimensions",
+            "description": "Operations with dimensions"
+        },
+        {
+            "name": "DimensionValues",
+            "description": "Operations with dimension values"
+        }
+    ],
+    "paths": {
+        "/": {
+            "get": {
+                "tags": [
+                    "Base"
+                ],
+                "summary": "List API endpoints",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/indentParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/prettyParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/filterParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/fieldsParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/sortParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/orderParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/indicators": {
+            "get": {
+                "tags": [
+                    "Indicators"
+                ],
+                "summary": "List all indicators",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/indentParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/prettyParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/filterParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/fieldsParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/sortParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/orderParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/indicators/{id}": {
+            "get": {
+                "tags": [
+                    "Indicators"
+                ],
+                "summary": "Get indicator details by id",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/indentParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/prettyParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/filterParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/fieldsParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/sortParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/orderParam"
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The id that needs to be fetched",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/dimensions": {
+            "get": {
+                "tags": [
+                    "Dimensions"
+                ],
+                "summary": "List all dimensions",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/indentParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/prettyParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/filterParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/fieldsParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/sortParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/orderParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/dimensions/{id}": {
+            "get": {
+                "tags": [
+                    "Dimensions"
+                ],
+                "summary": "Get dimension details by id",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/indentParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/prettyParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/filterParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/fieldsParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/sortParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/orderParam"
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The id that needs to be fetched",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/dimensionValues": {
+            "get": {
+                "tags": [
+                    "DimensionValues"
+                ],
+                "summary": "List all dimension values",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/indentParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/prettyParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/filterParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/fieldsParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/sortParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/orderParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "parameters": {
+            "indentParam": {
+                "name": "indent",
+                "in": "query",
+                "schema": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "default": 0
+                },
+                "description": "Indentation of the JSON output"
+            },
+            "prettyParam": {
+                "name": "pretty",
+                "in": "query",
+                "schema": {
+                    "type": "boolean"
+                },
+                "description": "Default indentation of the JSON output"
+            },
+            "filterParam": {
+                "name": "filter",
+                "in": "query",
+                "schema": {
+                    "type": "string"
+                },
+                "description": "Query result filters separated with commas"
+            },
+            "fieldsParam": {
+                "name": "fields",
+                "in": "query",
+                "schema": {
+                    "type": "string"
+                },
+                "description": "Query field filters separated with commas"
+            },
+            "sortParam": {
+                "name": "sort",
+                "in": "query",
+                "schema": {
+                    "type": "string"
+                },
+                "description": "Field to sort the response"
+            },
+            "orderParam": {
+                "name": "order",
+                "in": "query",
+                "schema": {
+                    "type": "string",
+                    "enum": [
+                        "asc",
+                        "desc"
+                    ]
+                },
+                "description": "Ascending or descending order of sort"
+            }
+        }
+    }
+}

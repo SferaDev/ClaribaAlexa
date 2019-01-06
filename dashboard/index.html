@@ -1,0 +1,382 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang=""> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Clariba's Genie</title>
+    <meta name="description" content="Sufee Admin - HTML5 Admin Template">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="apple-touch-icon" href="apple-icon.png">
+    <link rel="shortcut icon" href="favicon.ico">
+
+    <link rel="stylesheet" href="assets/css/normalize.css">
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/css/themify-icons.css">
+    <link rel="stylesheet" href="assets/css/flag-icon.min.css">
+    <link rel="stylesheet" href="assets/css/cs-skin-elastic.css">
+    <!-- <link rel="stylesheet" href="assets/css/bootstrap-select.less"> -->
+    <link rel="stylesheet" href="assets/scss/style.css">
+    <link href="assets/css/lib/vector-map/jqvmap.min.css" rel="stylesheet">
+
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
+
+    <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/html5shiv/3.7.3/html5shiv.min.js"></script> -->
+	
+    <script language="JavaScript" type="text/javascript" src="assets/js/vendor/jquery-1.11.3.min.js"></script>
+    <script language="JavaScript" type="text/javascript" src="assets/js/vendor/jquery-2.1.4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
+    <script src="assets/js/plugins.js"></script>
+    <script src="assets/js/main.js"></script>
+
+    <script src="assets/js/lib/chart-js/Chart.bundle.js"></script>
+</head>
+<body>
+
+<!-- ${value} ${sentence} ${id} -->
+<script type="text/template" data-template="small_graph">	
+	<div class="col-sm-6 col-lg-3">
+		<div class="card text-white bg-flat-color-1">
+			<div class="card-body pb-0">
+                <!--
+                    <div class="dropdown float-right">
+                        <button class="btn bg-transparent dropdown-toggle theme-toggle text-light" type="button" id="dropdownMenuButton" data-toggle="dropdown">
+                            <i class="fa fa-cog"></i>
+                        </button>
+                    </div>
+                -->
+				<h4 class="mb-0">
+					<span class="count">${value}</span>
+				</h4>
+				<p class="text-light">${sentence}</p>
+				<div class="chart-wrapper px-0" style="height:70px;" height="70">
+					<canvas id="small_graph_${id}"></canvas>
+				</div>
+			</div>
+		</div>
+	</div>
+</script>
+
+<!-- ${sentence} -->
+<script type="text/template" data-template="sentence">	
+    <div class="col-sm-12">
+        <div class="alert alert-${class} alert-dismissible fade show" role="alert">
+            ${sentence}
+            <!--
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            -->
+        </div>
+    </div>
+</script>
+
+<!-- ${title} ${value} -->
+<script type="text/template" data-template="label">	
+    <div class="col-xl-3 col-lg-6">
+        <div class="card">
+            <div class="card-body">
+                <div class="stat-widget-one">
+                    <div class="stat-icon dib"><i class="ti-money text-primary border-primary"></i></div>
+                    <div class="stat-content dib">
+                        <div class="stat-text"> ${title}</div>
+                        <div class="stat-digit"> ${value}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script>
+	var template_small_graph = $('script[data-template="small_graph"]').text().split(/\$\{(.+?)\}/g);
+	var template_label = $('script[data-template="label"]').text().split(/\$\{(.+?)\}/g);
+	var template_sentence = $('script[data-template="sentence"]').text().split(/\$\{(.+?)\}/g);
+	//var template_graph = $('script[data-template="graph"]').text().split(/\$\{(.+?)\}/g);
+    
+    var get_json = $.getJSON( "json_example.json", function(data) {
+        generate_html_from_json(data, true, 'frequent_queries');
+        //generate_html_from_json(frequent_queries_obj, false, 'last_queries');
+    });
+    //$.getJSON( "json_example.json", function(data) {
+    //    generate_html_from_json(frequent_queries_obj, false, 'last_queries');
+    //});
+    
+    sentence_classes = ["success", "warning", "danger", "info"];
+    
+	function generate_small_graph(sentence, value, graph_id) {
+        var html = [];
+        html[0] = template_small_graph[0];
+        html[1] = value;
+        html[2] = template_small_graph[2];
+        html[3] = sentence;
+        html[4] = template_small_graph[4];
+        html[5] = graph_id;
+        html[6] = template_small_graph[6];
+        return html.join('');
+    }
+    function populate_small_graph(graph_id, graph_values) {
+        var graph_labels = [];
+        var graph_numbers = [];
+        for(var i=0; i<graph_values.length; ++i) {
+            graph_labels[i] = graph_values[i].label;
+            graph_numbers[i] = graph_values[i].value;
+        }
+        var ctx = document.getElementById("small_graph_" + graph_id);
+        ctx.height = 150;
+        var myChart = new Chart( ctx, {
+            type: 'line',
+            data: {
+                labels: graph_labels, //['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                type: 'line',
+                datasets: [ {
+                    data: graph_numbers, //[65, 59, 84, 84, 51, 55, 40],
+                    label: 'Dataset',
+                    backgroundColor: 'transparent',
+                    borderColor: 'rgba(255,255,255,.55)',
+                }, ]
+            },
+            options: {
+
+                maintainAspectRatio: false,
+                legend: {
+                    display: false
+                },
+                responsive: true,
+                tooltips: {
+                    mode: 'index',
+                    titleFontSize: 12,
+                    titleFontColor: '#000',
+                    bodyFontColor: '#000',
+                    backgroundColor: '#fff',
+                    titleFontFamily: 'Montserrat',
+                    bodyFontFamily: 'Montserrat',
+                    cornerRadius: 3,
+                    intersect: false,
+                },
+                scales: {
+                    xAxes: [ {
+                        gridLines: {
+                            color: 'transparent',
+                            zeroLineColor: 'transparent'
+                        },
+                        ticks: {
+                            fontSize: 2,
+                            fontColor: 'transparent'
+                        }
+                    } ],
+                    yAxes: [ {
+                        display:false,
+                        ticks: {
+                            display: false,
+                        }
+                    } ]
+                },
+                title: {
+                    display: false,
+                },
+                elements: {
+                    line: {
+                        borderWidth: 1
+                    },
+                    point: {
+                        radius: 4,
+                        hitRadius: 10,
+                        hoverRadius: 4
+                    }
+                }
+            }
+        } );
+    }
+    function generate_sentence(sentence, sentence_class) {
+        var html = [];
+        html[0] = template_sentence[0];
+        html[1] = sentence_class;
+        html[2] = template_sentence[2];
+        html[3] = sentence;
+        html[4] = template_sentence[4];
+        return html.join('');
+    }
+    function generate_label(title, value) {
+        var html = [];
+        html[0] = template_label[0];
+        html[1] = title;
+        html[2] = template_label[2];
+        html[3] = value;
+        html[4] = template_label[4];
+        return html.join('');
+    }
+    function generate_grid() {
+
+    }
+    function generate_graph() {
+        
+    }
+
+    function generate_html_from_json(json_obj, compressed, parent_id) {
+        var queries = json_obj.queries;
+        var parent = document.getElementById(parent_id);
+        if(compressed) {
+            for(var i=0; i<queries.length; ++i) {
+                switch(queries[i].type) {
+                    case "label":
+                        parent.innerHTML += generate_label(queries[i].sentence, queries[i].value);
+                        break;
+                    case "graph":
+                        parent.innerHTML += generate_small_graph(queries[i].sentence, "", parent_id+'_'+i);
+                        populate_small_graph(parent_id+'_'+i, queries[i].value);
+                        break;
+                }
+            }
+        } else {
+            for(var i=0; i<queries.length; ++i) {
+                var sentence_class = queries[i].correct ? sentence_classes[0] : sentence_classes[2];
+                parent.innerHTML += generate_sentence(queries[i].sentence, sentence_class);
+                switch(queries[i].type) {
+                    case "label":
+                        parent.innerHTML += generate_label(queries[i].sentence, queries[i].value);
+                        break;
+                    case "graph":
+                        break;
+                    case "grid":
+                        break;
+                }
+            }
+        }
+    }
+</script>
+
+<!-- Right Panel -->
+    <div id="right-panel" class="right-panel">
+
+	<!-- Header-->
+        <header id="header" class="header">
+
+            <div class="header-menu">
+
+                <!-- Left section -->
+                <div class="col-sm-7">
+                    <div class="header-left">
+						
+                    </div>
+                </div>
+
+                <!-- Right section -->
+                <div class="col-sm-5">
+                    
+                </div>
+            </div>
+
+        </header>
+	<!-- Header-->
+
+		<!-- Most frequent queries Section title -->
+        <div class="breadcrumbs">
+            <div class="col-sm-4">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <h1>Most frequent queries</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+		<!-- Most frequent queries entries -->
+        <div id="frequent_queries" class="content mt-3"> 
+			<script>
+                
+			</script>
+        </div>
+
+        <!-- Last queries Section title -->
+        <div class="breadcrumbs">
+            <div class="col-sm-4">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <h1>Last queries</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-8">
+                <div class="page-header float-right">
+                    <div class="page-title">
+                        <ol class="breadcrumb text-right">
+                            <li class="active"> <!-- Dashboard --> </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+        <div id="last_queries" class="content mt-3">
+
+            <!-- Chart half width screen -->
+            <div class="col-xl-6">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <h4 class="card-title mb-0">Traffic</h4>
+                                <div class="small text-muted">October 2017</div>
+                            </div>
+                            <!--/.col-->
+                        </div><!--/.row-->
+                        <div class="chart-wrapper mt-4" >
+                            <canvas id="trafficChart" style="height:200px;" height="200"></canvas>
+                            <script src="assets/js/dashboard.js"></script>
+                        </div>
+
+                    </div>
+                    <div class="card-footer">
+                        <ul>
+                            <li>
+                                <div class="text-muted">Visits</div>
+                                <strong>29.703 Users (40%)</strong>
+                                <div class="progress progress-xs mt-2" style="height: 5px;">
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: 40%;" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </li>
+                            <li class="hidden-sm-down">
+                                <div class="text-muted">Unique</div>
+                                <strong>24.093 Users (20%)</strong>
+                                <div class="progress progress-xs mt-2" style="height: 5px;">
+                                    <div class="progress-bar bg-info" role="progressbar" style="width: 20%;" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="text-muted">Pageviews</div>
+                                <strong>78.706 Views (60%)</strong>
+                                <div class="progress progress-xs mt-2" style="height: 5px;">
+                                    <div class="progress-bar bg-warning" role="progressbar" style="width: 60%;" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </li>
+                            <li class="hidden-sm-down">
+                                <div class="text-muted">New Users</div>
+                                <strong>22.123 Users (80%)</strong>
+                                <div class="progress progress-xs mt-2" style="height: 5px;">
+                                    <div class="progress-bar bg-danger" role="progressbar" style="width: 80%;" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </li>
+                            <li class="hidden-sm-down">
+                                <div class="text-muted">Bounce Rate</div>
+                                <strong>40.15%</strong>
+                                <div class="progress progress-xs mt-2" style="height: 5px;">
+                                    <div class="progress-bar" role="progressbar" style="width: 40%;" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+<!-- Right Panel -->
+
+</body>
+</html>

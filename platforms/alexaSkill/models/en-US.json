@@ -1,0 +1,42 @@
+{
+	"interactionModel": {
+		"languageModel": {
+			"invocationName": "genie",
+			"types": [],
+			"intents": [
+				{
+					"name": "MainIntent",
+					"samples": [
+						"Genie"
+					]
+				},
+				{
+					"name": "ListKPIIntent",
+					"samples": [
+						"List all KPIs",
+						"List all KPI",
+						"List KPIs",
+						"List KPI",
+						"List Indicators",
+						"Indicator List",
+						"List all indicators",
+						"List available indicators",
+						"List all available indicators"
+					]
+				},
+				{
+					"name": "AMAZON.CancelIntent",
+					"samples": []
+				},
+				{
+					"name": "AMAZON.HelpIntent",
+					"samples": []
+				},
+				{
+					"name": "AMAZON.StopIntent",
+					"samples": []
+				}
+			]
+		}
+	}
+}

@@ -1,0 +1,45 @@
+{
+	"invocation": "genie",
+	"intents": [
+		{
+			"name": "MainIntent",
+			"phrases": [
+				"Genie"
+			]
+		},
+		{
+			"name": "ListKPIIntent",
+            "phrases": [
+                "List all KPIs",
+                "List all KPI",
+                "List KPIs",
+                "List KPI",
+                "List Indicators",
+                "Indicator List",
+                "List all indicators",
+                "List available indicators",
+                "List all available indicators"
+            ]
+		}
+	],
+	"alexa": {
+		"interactionModel": {
+			"languageModel": {
+				"intents": [
+					{
+						"name": "AMAZON.CancelIntent",
+						"samples": []
+					},
+					{
+						"name": "AMAZON.HelpIntent",
+						"samples": []
+					},
+					{
+						"name": "AMAZON.StopIntent",
+						"samples": []
+					}
+				]
+			}
+		}
+	}
+}

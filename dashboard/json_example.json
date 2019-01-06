@@ -1,0 +1,64 @@
+{  
+    "queries":[  
+       {  
+          "correct":true,
+          "sentence":"Cost of Sales in Spain during this year",
+          "type":"label",
+          "value":"1892"
+       },
+       {  
+          "correct":true,
+          "sentence":"Revenue of France in 2017",
+          "type":"graph",
+          "value":[  
+             {  
+                "label":"Q1",
+                "value": 100
+             },
+             {  
+                "label":"Q2",
+                "value": 200
+             },
+             {  
+                "label":"Q3",
+                "value": 3000
+             },
+             {
+                "label":"Q4",
+                "value": 3000
+             }
+          ]
+       },
+       {  
+          "correct":false,
+          "sentence":"Users per month",
+          "type":"grid",
+          "value":[  
+             [  
+                "",
+                "January",
+                "February",
+                "March"
+             ],
+             [  
+                "Day 1",
+                "123123",
+                "2345765",
+                "287654"
+             ],
+             [  
+                "Day 2",
+                "676454",
+                "----",
+                "2356"
+             ],
+             [  
+                "Day 3",
+                "25634",
+                "0",
+                "7654235"
+             ]
+          ]
+       }
+    ]
+ }
