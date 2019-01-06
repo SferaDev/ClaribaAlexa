@@ -2,17 +2,18 @@ import * as express from "express";
 import {
     getAllDimensions,
     getAllDimensionValues,
-    getAllIndicators, getDimensionName,
+    getAllIndicators,
+    getDimensionName,
     getDimensionsByIndicator,
     getDimensionValuesByDimension,
     getIndicatorName
 } from "../data";
 import {getParserService, parseQuestion, ParserService} from "../logic/parser";
 
-export const apiRouter = express.Router();
+export const router = express.Router();
 
 // Middleware to prettify/filter/sort JSON result
-apiRouter.use((req, res, next) => {
+router.use((req, res, next) => {
     let oldSend = res.send;
     res.set('Content-Type', 'application/json');
     res.send = function (obj) {
@@ -53,7 +54,7 @@ apiRouter.use((req, res, next) => {
     next();
 });
 
-apiRouter.get('/', (req, res) => {
+router.get('/', (req, res) => {
     res.send([
         "/api/indicators",
         "/api/indicators/:id",
@@ -64,11 +65,11 @@ apiRouter.get('/', (req, res) => {
     ]);
 });
 
-apiRouter.get('/indicators', (req, res) => {
+router.get('/indicators', (req, res) => {
     getAllIndicators().then(result => res.send(result));
 });
 
-apiRouter.get('/indicators/:id', (req, res) => {
+router.get('/indicators/:id', (req, res) => {
     getIndicatorName(req.params.id).then(name => {
         getDimensionsByIndicator(req.params.id).then(result => res.send({
             KPI_ID: req.params.id,
@@ -78,11 +79,11 @@ apiRouter.get('/indicators/:id', (req, res) => {
     });
 });
 
-apiRouter.get('/dimensions', (req, res) => {
+router.get('/dimensions', (req, res) => {
     getAllDimensions().then(result => res.send(result));
 });
 
-apiRouter.get('/dimensions/:id', (req, res) => {
+router.get('/dimensions/:id', (req, res) => {
     getDimensionName(req.params.id).then(name => {
         getDimensionValuesByDimension(req.params.id).then(result => res.send({
             DIMENSION_ID: req.params.id,
@@ -92,14 +93,14 @@ apiRouter.get('/dimensions/:id', (req, res) => {
     });
 });
 
-apiRouter.get('/dimensionValues', (req, res) => {
+router.get('/dimensionValues', (req, res) => {
     getAllDimensionValues().then(result => res.send(result));
 });
 
-apiRouter.get('/ask', (req, res) => {
+router.get('/ask', (req, res) => {
     let question = req.query.question !== undefined ? req.query.question.replace(/["]+/g, '') : '';
     let parserService = new ParserService();
     parserService.init().then(() => {
         parserService.parse(question).then(result => res.send(result));
-    })
+    });
 });

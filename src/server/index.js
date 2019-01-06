@@ -4,8 +4,8 @@ import {Webhook} from 'jovo-framework';
 import swaggerUi from 'swagger-ui-express';
 import yaml from 'yamljs';
 
-import {index} from './voice/app.js';
-import {apiRouter} from "./apiRouter";
+import {app} from '../voice';
+import {router} from "./router";
 
 const port = process.env.PORT || 3000;
 
@@ -18,9 +18,9 @@ Webhook.use('/', express.static('docs'));
 Webhook.use('/docs', swaggerUi.serve, swaggerUi.setup(yaml.load('./docs/api.yaml')));
 
 Webhook.post('/webhook', (req, res) => {
-    index.handleWebhook(req, res);
+    app.handleWebhook(req, res);
 });
 
-Webhook.use('/api', apiRouter);
+Webhook.use('/api', router);
 
 Webhook.use('/dashboard', express.static('dashboard'));

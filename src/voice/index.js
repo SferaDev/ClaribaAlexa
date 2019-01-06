@@ -3,11 +3,11 @@ import {App} from "jovo-framework";
 import MainIntent from "./MainIntent";
 import QueryIntent from "./QueryIntent";
 
-export const index = new App({
+export const app = new App({
     logging: true,
 });
 
-index.setHandler({
+app.setHandler({
     'LAUNCH': MainIntent,
     'QUERY': QueryIntent
 });

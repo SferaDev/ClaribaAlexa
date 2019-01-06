@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { setupCache } from 'axios-cache-adapter'
+import {setupCache} from 'axios-cache-adapter'
 
 const compareTypes = [
     '=', '>', '<', '<>', 'LIKE', 'EXISTS', 'BETWEEN', 'IN', 'NULL', 'CONTAINS'

@@ -83,7 +83,7 @@ ParserService.prototype.generateSpokenResponse = function (results) {
             partial.value = result.data;
             partial.spoken += converter.toWords(partial.value);
         } else if (result.data.length > 1) {
-            partial.sum = result.data.reduce((a,b) => a + b, 0);
+            partial.sum = result.data.reduce((a, b) => a + b, 0);
             partial.avg = partial.sum / result.data.length;
             partial.max = Math.max(...result.data);
             partial.min = Math.min(...result.data);

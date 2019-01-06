@@ -7,9 +7,9 @@ export default async function () {
     result = [
         'There are ' + kpiList.length + ' indicators.',
         'Here you have three examples!',
-        '1: ' + kpiList[(random)%kpiList.length].KPI_NAME + '.',
-        '2: ' + kpiList[(random + 1)%kpiList.length].KPI_NAME + '.',
-        '3: ' + kpiList[(random + 2)%kpiList.length].KPI_NAME + '.'
+        '1: ' + kpiList[(random) % kpiList.length].KPI_NAME + '.',
+        '2: ' + kpiList[(random + 1) % kpiList.length].KPI_NAME + '.',
+        '3: ' + kpiList[(random + 2) % kpiList.length].KPI_NAME + '.'
     ];
     this.tell(result.join(' '));
 }

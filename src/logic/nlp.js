@@ -34,7 +34,7 @@ LanguageService.prototype.findEntities = function (string, whitelist) {
 };
 
 async function createEntityDetector(language) {
-    const entityDetector = new NerManager({ threshold: 0.85 });
+    const entityDetector = new NerManager({threshold: 0.85});
 
     let promiseKPI = getAllIndicators();
     let promiseDimensionValue = getAllDimensionValues();
