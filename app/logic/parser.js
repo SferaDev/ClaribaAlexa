@@ -63,10 +63,15 @@ ParserService.prototype.obtainResults = async function (query) {
     let results = [];
 
     try {
+        // TODO: Context aware, get previous query dimensions
+        if (query.dimensions.length === 0) {
+        }
+
         if (query.indicators.length > 0) {
             // For each indicator compute a database query and build a result
             let promises = query.indicators.map(indicator => makeRequestToServer(indicator, query));
             results = await Promise.all(promises);
+
         } else {
             // TODO: Context aware (As there are no indicators found use the previous query)
         }
@@ -103,7 +108,7 @@ ParserService.prototype.generateSpokenResponse = function (query, results) {
     });
 
     if (response.length === 0) {
-        response.push('Sorry, I could not find any relevant information for your query.')
+        response.push({spoken: 'Sorry, I could not find any relevant information for your query.'});
     }
 
     return response;
