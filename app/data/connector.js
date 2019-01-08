@@ -55,7 +55,7 @@ export function queryFromServer(indicator, dimensions, aggregationTypes = []) {
         };
 
         // Add aggregationType if defined
-        if (aggregationTypes.length > 0) parameters.agregation_type = aggregationTypes[0];
+        if (aggregationTypes.length > 0) parameters.agregation_type = aggregationTypes[0].value;
 
         axiosInstance.get(serverUrl, {
             params: parameters

@@ -94,6 +94,8 @@ ParserService.prototype.generateSpokenResponse = function (query, results) {
         } else if (result.data.length > 1) {
             partial.sum = result.data.reduce((a, b) => a + b, 0);
             partial.avg = partial.sum / result.data.length;
+            partial.min = Math.min(...result.data);
+            partial.max = Math.max(...result.data);
             partial.spoken += 'Total: ' + converter.toWords(partial.sum) + '. ';
             partial.spoken += 'Average: ' + converter.toWords(partial.avg) + '. ';
         }
@@ -122,7 +124,7 @@ function makeRequestToServer(indicator, query) {
 
         try {
             let result = await queryFromServer(indicator, params, query.aggregationTypes);
-            resolve({...result, indicator, params});
+            resolve({...result, indicator, params, aggregation: query.aggregationTypes});
         } catch (error) {
             reject(error);
         }
