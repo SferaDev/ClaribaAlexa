@@ -7,6 +7,8 @@ import {AGGREGATION_TYPE, DATE_RANGE, DIMENSION_VALUE, KPI} from "../constants";
 import {getAllDimensionValues, getAllIndicators} from "../data";
 import {queryFromServer} from "../data/connector";
 import {databaseModel} from "../data/databaseModel";
+import * as iso3166 from "botframework-connector";
+import {getDimensionsByIndicator} from "../../dist/data";
 
 export let ParserService = function () {
     this.previousQueries = [];
@@ -22,16 +24,15 @@ ParserService.prototype.init = async function () {
 
 ParserService.prototype.parse = async function (question) {
     let query = await this.parseQuestion(question);
-    let results = await this.obtainResults(query);
+    let results = await this.obtainResults(question, query);
     let response = this.generateSpokenResponse(query, results);
 
     // Add current query to previousQueries stack
     this.previousQueries.unshift(query);
 
     let result = {
-        question,
+        query: {question, ...query},
         response,
-        query,
         results
     };
 
@@ -66,7 +67,7 @@ ParserService.prototype.parseQuestion = async function (question) {
     };
 };
 
-ParserService.prototype.obtainResults = async function (query) {
+ParserService.prototype.obtainResults = async function (question, query) {
     let results = [];
 
     try {
@@ -76,7 +77,7 @@ ParserService.prototype.obtainResults = async function (query) {
 
         if (query.indicators.length > 0) {
             // For each indicator compute a database query and build a result
-            let promises = query.indicators.map(indicator => makeRequestToServer(indicator, query));
+            let promises = query.indicators.map(indicator => makeRequestToServer(question, indicator, query));
             results = await Promise.all(promises);
 
         } else {
@@ -121,19 +122,46 @@ ParserService.prototype.generateSpokenResponse = function (query, results) {
     return response;
 };
 
-function makeRequestToServer(indicator, query) {
+function makeRequestToServer(question, indicator, query) {
     return new Promise(async function (resolve, reject) {
         let params = [];
 
-        // TODO: Add country detection
+        // TODO: Deep copy
         // countryDetector.detect("Hello, I come from Germany!");
         // { iso3166: 'DE', name: 'Germany', type: 'country', matches: [ 'Germany' ] }
-        // If query.dimensions find dimension.DIMENSION_NAME === 'COUNTRY'
-        // query.dimensions.find(dimension => dimension.DIMENSION_NAME === 'COUNTRY')
-        // Then dimension.DIMENSION_VALUE = iso3166
+
+        let index = query.dimensions.findIndex(dimension => dimension.DIMENSION_NAME === 'COUNTRY');
+        if (index != -1) {
+            var country_value = query.dimensions[index].DIMENSION_VALUE;
+            var detector = countryDetector.detect(question);
+            //console.log(detector[0].iso3166);
+            query.dimensions[index].DIMENSION_VALUE = detector[0].iso3166;
+        }
 
         // TODO: Filter out those dimensions that are not found in the indicator
-        //_.intersection(query.dimensions, getDimensionsByIndicator(indicator.KPI_ID))
+
+        /*console.log(query.dimensions);
+        console.log('--------------------------')
+        let dimensions_indicator = await getDimensionsByIndicator(indicator.KPI_ID);
+        console.log(dimensions_indicator);
+
+        let dimensions_id_query = query.dimensions.map(dimension => dimension.DIMENSION_ID);
+        let dimensions_id_indicator = dimensions_indicator.map(dimension => dimension.DIMENSION_ID);
+        let dimensions_intersection = _.intersection(dimensions_id_query, dimensions_id_indicator);
+        console.log(dimensions_intersection);
+
+        let final_filter = new Array();
+        for (var i = 0; i < dimensions_intersection.length; i++){
+            for (var j = 0; j < query.dimensions.length; j++){
+                if (dimensions_intersection[i] === query.dimensions[j].DIMENSION_ID){
+                    final_filter.prototype.push(query.dimension[j]);
+                    console.log('intro');
+                }
+            };
+        };
+
+        //console.log(final_filter);*/
+
         query.dimensions.forEach(dimension => params.push({
             name: dimension.DIMENSION_NAME,
             value: dimension.DIMENSION_VALUE,
