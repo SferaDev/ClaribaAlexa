@@ -11,17 +11,21 @@
 					]
 				},
 				{
-					"name": "ListKPIIntent",
+					"name": "QueryIntent",
 					"samples": [
-						"List all KPIs",
-						"List all KPI",
-						"List KPIs",
-						"List KPI",
-						"List Indicators",
-						"Indicator List",
-						"List all indicators",
-						"List available indicators",
-						"List all available indicators"
+						"isn't {UserInput}",
+						"is {UserInput}",
+						"How {UserInput}",
+						"Where {UserInput}",
+						"Why {UserInput}",
+						"What {UserInput}",
+						"When {UserInput}"
+					],
+					"slots": [
+						{
+							"name": "UserInput",
+							"type": "AMAZON.SearchQuery"
+						}
 					]
 				},
 				{

@@ -4,7 +4,7 @@ import {Webhook} from 'jovo-framework';
 import swaggerUi from 'swagger-ui-express';
 import yaml from 'yamljs';
 
-import {app} from '../voice';
+import {app} from '../app';
 import {router} from "./router";
 
 const port = process.env.PORT || 3000;

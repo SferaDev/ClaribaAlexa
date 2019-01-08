@@ -8,18 +8,24 @@
 			]
 		},
 		{
-			"name": "ListKPIIntent",
-            "phrases": [
-                "List all KPIs",
-                "List all KPI",
-                "List KPIs",
-                "List KPI",
-                "List Indicators",
-                "Indicator List",
-                "List all indicators",
-                "List available indicators",
-                "List all available indicators"
-            ]
+			"name": "QueryIntent",
+			"phrases": [
+				"isn't {UserInput}",
+				"is {UserInput}",
+				"How {UserInput}",
+				"Where {UserInput}",
+				"Why {UserInput}",
+				"What {UserInput}",
+				"When {UserInput}"
+			],
+			"inputs": [
+				{
+					"name": "UserInput",
+					"type": {
+						"alexa": "AMAZON.SearchQuery"
+					}
+				}
+			]
 		}
 	],
 	"alexa": {

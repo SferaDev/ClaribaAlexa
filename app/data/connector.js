@@ -64,10 +64,12 @@ export function queryFromServer(indicator, dimensions, aggregationTypes = []) {
             data = data.map(e => !isNaN(e) ? parseFloat(e) : 0);
             resolve({
                 url: serverHost + result.request.path,
-                data: data
+                data
             });
         }).catch(error => {
-            console.error(error);
+            reject({
+                error
+            })
         });
     });
 }
