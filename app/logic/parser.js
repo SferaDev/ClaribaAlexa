@@ -90,17 +90,14 @@ ParserService.prototype.generateSpokenResponse = function (query, results) {
         }
         if (result.data.length === 1) {
             partial.value = result.data;
-            partial.spoken += converter.toWords(partial.value);
+            partial.spoken += converter.toWords(partial.value) + '. ';
         } else if (result.data.length > 1) {
             partial.sum = result.data.reduce((a, b) => a + b, 0);
             partial.avg = partial.sum / result.data.length;
             partial.spoken += 'Total: ' + converter.toWords(partial.sum) + '. ';
             partial.spoken += 'Average: ' + converter.toWords(partial.avg) + '. ';
         }
-        if (result.data.length > 0) {
-            partial.spoken += '.';
-            response.push(partial);
-        }
+        if (result.data.length > 0) response.push(partial);
     });
 
     if (response.length === 0) {
