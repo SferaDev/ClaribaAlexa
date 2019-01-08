@@ -16,8 +16,11 @@ parserService.init().then(() => {
         'QueryIntent': function() {
             let question = this.getInput('UserInput').value;
             parserService.parse(question).then(result => {
-                console.log(result);
-                this.tell(result.response.spoken);
+                let speech = this.speechBuilder();
+                result.response.forEach(response => {
+                    speech.addText(response.spoken);
+                });
+                this.tell(speech);
             });
         }
     });
