@@ -22,6 +22,9 @@ parserService.init().then(() => {
                 });
                 this.tell(speech);
             });
+        },
+        'Unhandled': function() {
+            this.tell('Sorry, I did not detect any query in your response.');
         }
     });
 });
