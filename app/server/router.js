@@ -9,6 +9,7 @@ import {
     getIndicatorName
 } from "../data";
 import {ParserService} from "../logic/parser";
+import {databaseModel} from "../data/databaseModel";
 
 export const router = express.Router();
 
@@ -102,5 +103,11 @@ router.get('/ask', (req, res) => {
     let parserService = new ParserService();
     parserService.init().then(() => {
         parserService.parse(question).then(result => res.send(result));
+    });
+});
+
+router.get('/recent', (req, res) => {
+    databaseModel.find({}, function(err, recents) {
+        res.send(recents);
     });
 });

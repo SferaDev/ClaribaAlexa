@@ -4,6 +4,7 @@ import {aggregationTypes, LanguageService} from "./nlp";
 import {AGGREGATION_TYPE, DATE_RANGE, DIMENSION_VALUE, KPI} from "../constants";
 import {getAllDimensionValues, getAllIndicators} from "../data";
 import {queryFromServer} from "../data/connector";
+import {databaseModel} from "../data/databaseModel";
 
 export let ParserService = function () {
     this.previousQueries = [];
@@ -25,12 +26,16 @@ ParserService.prototype.parse = async function (question) {
     // Add current query to previousQueries stack
     this.previousQueries.unshift(query);
 
-    return {
+    let result = {
         question,
         response,
         query,
         results
     };
+
+    databaseModel.create({data: result});
+
+    return result;
 };
 
 ParserService.prototype.parseQuestion = async function (question) {
@@ -56,7 +61,7 @@ ParserService.prototype.parseQuestion = async function (question) {
         dimensions: detectedDimensionValues,
         timeRanges: detectedTimeRanges,
         aggregationTypes: detectedAggregationTypes
-    }
+    };
 };
 
 ParserService.prototype.obtainResults = async function (query) {
