@@ -1,4 +1,6 @@
+import _ from 'lodash';
 import converter from "number-to-words";
+import countryDetector from "country-in-text-detector";
 
 import {aggregationTypes, LanguageService} from "./nlp";
 import {AGGREGATION_TYPE, DATE_RANGE, DIMENSION_VALUE, KPI} from "../constants";
@@ -123,7 +125,15 @@ function makeRequestToServer(indicator, query) {
     return new Promise(async function (resolve, reject) {
         let params = [];
 
+        // TODO: Add country detection
+        // countryDetector.detect("Hello, I come from Germany!");
+        // { iso3166: 'DE', name: 'Germany', type: 'country', matches: [ 'Germany' ] }
+        // If query.dimensions find dimension.DIMENSION_NAME === 'COUNTRY'
+        // query.dimensions.find(dimension => dimension.DIMENSION_NAME === 'COUNTRY')
+        // Then dimension.DIMENSION_VALUE = iso3166
+
         // TODO: Filter out those dimensions that are not found in the indicator
+        //_.intersection(query.dimensions, getDimensionsByIndicator(indicator.KPI_ID))
         query.dimensions.forEach(dimension => params.push({
             name: dimension.DIMENSION_NAME,
             value: dimension.DIMENSION_VALUE,

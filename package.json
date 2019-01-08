@@ -10,6 +10,7 @@
         "babel-preset-env": "~1.6.1",
         "babel-preset-es2015": "^6.24.1",
         "babel-preset-stage-2": "^6.24.1",
+        "country-in-text-detector": "^1.0.10",
         "express": "latest",
         "jovo-cli": "^1.2.11",
         "jovo-framework": "^1.4.19",
@@ -19,7 +20,8 @@
         "number-to-words": "^1.2.4",
         "swagger-ui-express": "^4.0.1",
         "vorpal": "^1.12.0",
-        "yamljs": "^0.3.0"
+        "yamljs": "^0.3.0",
+      "lodash": "latest"
     },
     "devDependencies": {},
     "scripts": {
