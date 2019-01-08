@@ -1,121 +1,141 @@
 openapi: 3.0.0
 info:
-  description: "Clariba's genie is a Business Intelligence (BI) smart assistant built for Amazon's Alexa. This API exposes a set of endpoints that the Voice-enabled app uses and that are useful for Big Data analysis."
+  description: >-
+    Clariba's genie is a Business Intelligence (BI) smart assistant built for
+    Amazon's Alexa. This API exposes a set of endpoints that the Voice-enabled
+    app uses and that are useful for Big Data analysis.
   version: 0.1.0
   title: Clariba's Genie
 servers:
-- url: 'https://clariba-genie.herokuapp.com/api'
+  - url: 'https://clariba-genie.herokuapp.com/api'
 tags:
-- name: Base
-- name: Indicators
-  description: Operations with indicators
-- name: Dimensions
-  description: Operations with dimensions
-- name: DimensionValues
-  description: Operations with dimension values
+  - name: Base
+  - name: Indicators
+    description: Operations with indicators
+  - name: Dimensions
+    description: Operations with dimensions
+  - name: DimensionValues
+    description: Operations with dimension values
+  - name: Ask
+    description: Complete questions
 paths:
-  '/':
+  /:
     get:
       tags:
-      - Base
+        - Base
       summary: List API endpoints
       parameters:
-      - $ref: '#/components/parameters/indentParam'
-      - $ref: '#/components/parameters/prettyParam'
-      - $ref: '#/components/parameters/filterParam'
-      - $ref: '#/components/parameters/fieldsParam'
-      - $ref: '#/components/parameters/sortParam'
-      - $ref: '#/components/parameters/orderParam'
+        - $ref: '#/components/parameters/indentParam'
+        - $ref: '#/components/parameters/prettyParam'
+        - $ref: '#/components/parameters/filterParam'
+        - $ref: '#/components/parameters/fieldsParam'
+        - $ref: '#/components/parameters/sortParam'
+        - $ref: '#/components/parameters/orderParam'
       responses:
         '200':
-          description: ""
-  '/indicators':
+          description: ''
+  /indicators:
     get:
       tags:
-      - Indicators
+        - Indicators
       summary: List all indicators
       parameters:
-      - $ref: '#/components/parameters/indentParam'
-      - $ref: '#/components/parameters/prettyParam'
-      - $ref: '#/components/parameters/filterParam'
-      - $ref: '#/components/parameters/fieldsParam'
-      - $ref: '#/components/parameters/sortParam'
-      - $ref: '#/components/parameters/orderParam'
+        - $ref: '#/components/parameters/indentParam'
+        - $ref: '#/components/parameters/prettyParam'
+        - $ref: '#/components/parameters/filterParam'
+        - $ref: '#/components/parameters/fieldsParam'
+        - $ref: '#/components/parameters/sortParam'
+        - $ref: '#/components/parameters/orderParam'
       responses:
         '200':
-          description: ""
+          description: ''
   '/indicators/{id}':
     get:
       tags:
-      - Indicators
+        - Indicators
       summary: Get indicator details by id
       parameters:
-      - $ref: '#/components/parameters/indentParam'
-      - $ref: '#/components/parameters/prettyParam'
-      - $ref: '#/components/parameters/filterParam'
-      - $ref: '#/components/parameters/fieldsParam'
-      - $ref: '#/components/parameters/sortParam'
-      - $ref: '#/components/parameters/orderParam'
-      - name: id
-        in: path
-        description: The id that needs to be fetched
-        required: true
-        schema:
-          type: string
+        - $ref: '#/components/parameters/indentParam'
+        - $ref: '#/components/parameters/prettyParam'
+        - $ref: '#/components/parameters/filterParam'
+        - $ref: '#/components/parameters/fieldsParam'
+        - $ref: '#/components/parameters/sortParam'
+        - $ref: '#/components/parameters/orderParam'
+        - name: id
+          in: path
+          description: The id that needs to be fetched
+          required: true
+          schema:
+            type: string
       responses:
         '200':
-          description: ""
-  '/dimensions':
+          description: ''
+  /dimensions:
     get:
       tags:
-      - Dimensions
+        - Dimensions
       summary: List all dimensions
       parameters:
-      - $ref: '#/components/parameters/indentParam'
-      - $ref: '#/components/parameters/prettyParam'
-      - $ref: '#/components/parameters/filterParam'
-      - $ref: '#/components/parameters/fieldsParam'
-      - $ref: '#/components/parameters/sortParam'
-      - $ref: '#/components/parameters/orderParam'
+        - $ref: '#/components/parameters/indentParam'
+        - $ref: '#/components/parameters/prettyParam'
+        - $ref: '#/components/parameters/filterParam'
+        - $ref: '#/components/parameters/fieldsParam'
+        - $ref: '#/components/parameters/sortParam'
+        - $ref: '#/components/parameters/orderParam'
       responses:
         '200':
-          description: ""
+          description: ''
   '/dimensions/{id}':
     get:
       tags:
-      - Dimensions
+        - Dimensions
       summary: Get dimension details by id
       parameters:
-      - $ref: '#/components/parameters/indentParam'
-      - $ref: '#/components/parameters/prettyParam'
-      - $ref: '#/components/parameters/filterParam'
-      - $ref: '#/components/parameters/fieldsParam'
-      - $ref: '#/components/parameters/sortParam'
-      - $ref: '#/components/parameters/orderParam'
-      - name: id
-        in: path
-        description: The id that needs to be fetched
-        required: true
-        schema:
-          type: string
+        - $ref: '#/components/parameters/indentParam'
+        - $ref: '#/components/parameters/prettyParam'
+        - $ref: '#/components/parameters/filterParam'
+        - $ref: '#/components/parameters/fieldsParam'
+        - $ref: '#/components/parameters/sortParam'
+        - $ref: '#/components/parameters/orderParam'
+        - name: id
+          in: path
+          description: The id that needs to be fetched
+          required: true
+          schema:
+            type: string
       responses:
         '200':
-          description: ""
-  '/dimensionValues':
+          description: ''
+  /dimensionValues:
     get:
       tags:
-      - DimensionValues
+        - DimensionValues
       summary: List all dimension values
       parameters:
-      - $ref: '#/components/parameters/indentParam'
-      - $ref: '#/components/parameters/prettyParam'
-      - $ref: '#/components/parameters/filterParam'
-      - $ref: '#/components/parameters/fieldsParam'
-      - $ref: '#/components/parameters/sortParam'
-      - $ref: '#/components/parameters/orderParam'
+        - $ref: '#/components/parameters/indentParam'
+        - $ref: '#/components/parameters/prettyParam'
+        - $ref: '#/components/parameters/filterParam'
+        - $ref: '#/components/parameters/fieldsParam'
+        - $ref: '#/components/parameters/sortParam'
+        - $ref: '#/components/parameters/orderParam'
       responses:
         '200':
-          description: ""
+          description: ''
+  /ask:
+    get:
+      tags:
+        - Ask
+      summary: List all questions
+      parameters:
+        - $ref: '#/components/parameters/indentParam'
+        - $ref: '#/components/parameters/prettyParam'
+        - $ref: '#/components/parameters/filterParam'
+        - $ref: '#/components/parameters/fieldsParam'
+        - $ref: '#/components/parameters/sortParam'
+        - $ref: '#/components/parameters/orderParam'
+      responses:
+        '200':
+          description: ''
 components:
   parameters:
     indentParam:
@@ -156,6 +176,6 @@ components:
       schema:
         type: string
         enum:
-        - asc
-        - desc
+          - asc
+          - desc
       description: Ascending or descending order of sort
