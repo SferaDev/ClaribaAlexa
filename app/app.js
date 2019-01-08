@@ -9,11 +9,11 @@ export const app = new App({
 let parserService = new ParserService();
 parserService.init().then(() => {
     app.setHandler({
-        'LAUNCH': function() {
+        'LAUNCH': function () {
             this.ask('Welcome to Clariba Genie! What do you want to know?',
                 'Please perform a query to Clariba Genie!');
         },
-        'QueryIntent': function() {
+        'QueryIntent': function () {
             let question = this.getInput('UserInput').value;
             parserService.parse(question).then(result => {
                 let speech = this.speechBuilder();
@@ -23,7 +23,7 @@ parserService.init().then(() => {
                 this.tell(speech);
             });
         },
-        'Unhandled': function() {
+        'Unhandled': function () {
             this.tell('Sorry, I did not detect any query in your response.');
         }
     });

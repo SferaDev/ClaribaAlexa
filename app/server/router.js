@@ -8,7 +8,7 @@ import {
     getDimensionValuesByDimension,
     getIndicatorName
 } from "../data";
-import {getParserService, parseQuestion, ParserService} from "../logic/parser";
+import {ParserService} from "../logic/parser";
 
 export const router = express.Router();
 
