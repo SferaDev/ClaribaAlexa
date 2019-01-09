@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import converter from "number-to-words";
 import countryDetector from "country-in-text-detector";
 
@@ -7,8 +6,6 @@ import {AGGREGATION_TYPE, DATE_RANGE, DIMENSION_VALUE, KPI} from "../constants";
 import {getAllDimensionValues, getAllIndicators} from "../data";
 import {queryFromServer} from "../data/connector";
 import {databaseModel} from "../data/databaseModel";
-import * as iso3166 from "botframework-connector";
-import {getDimensionsByIndicator} from "../../dist/data";
 
 export let ParserService = function () {
     this.previousQueries = [];
@@ -131,9 +128,9 @@ function makeRequestToServer(question, indicator, query) {
         // { iso3166: 'DE', name: 'Germany', type: 'country', matches: [ 'Germany' ] }
 
         let index = query.dimensions.findIndex(dimension => dimension.DIMENSION_NAME === 'COUNTRY');
-        if (index != -1) {
-            var country_value = query.dimensions[index].DIMENSION_VALUE;
-            var detector = countryDetector.detect(question);
+        if (index !== -1) {
+            let country_value = query.dimensions[index].DIMENSION_VALUE;
+            let detector = countryDetector.detect(question);
             //console.log(detector[0].iso3166);
             query.dimensions[index].DIMENSION_VALUE = detector[0].iso3166;
         }
