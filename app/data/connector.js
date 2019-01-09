@@ -41,9 +41,9 @@ export function getFromServer(url, parameters = {}) {
 
 export function queryFromServer(indicator, dimensions, aggregationTypes = []) {
     return new Promise(async function (resolve, reject) {
-        let dimension_names = dimensions.map(dimension => dimension.name);
-        let dimension_values = dimensions.map(dimension => dimension.value);
-        let dimension_compare = dimensions.map(dimension => dimension.compare);
+        let dimension_names = dimensions.map(dimension => dimension.DIMENSION_NAME);
+        let dimension_values = dimensions.map(dimension => dimension.DIMENSION_VALUE);
+        let dimension_compare = dimensions.map(dimension => dimension.COMPARE_STRATEGY);
 
         let serverHost = 'https://irca1b213eeb.hana.ondemand.com';
         let serverUrl = serverHost + '/ALEXA_PROJECT/KPI_SEARCH.xsjs';

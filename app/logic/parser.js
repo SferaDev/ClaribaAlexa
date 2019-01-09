@@ -125,6 +125,9 @@ function makeRequestToServer(question, indicator, query) {
         try {
             let requestQuery = JSON.parse(JSON.stringify(query));
 
+            // Inject compare strategy to dimensions, LIKE as default
+            requestQuery.dimensions.forEach(dimension => dimension.COMPARE_STRATEGY = 'LIKE');
+
             // Replace country names with country iso3166 codes
             let countryDimensionIndex = requestQuery.dimensions.findIndex(dimension => dimension.DIMENSION_NAME === 'COUNTRY');
             if (countryDimensionIndex !== -1) {
@@ -135,24 +138,20 @@ function makeRequestToServer(question, indicator, query) {
                     detectedDimension.DIMENSION_VALUE = detectedCountry.iso3166;
             }
 
-            // Intersect the dimensions to show only the common ones
+            // TODO: Add time range hard-coding month, day, year...
+
+            // Intersect the dimensions to show only the shared ones
             let indicatorDimensions = await getDimensionsByIndicator(indicator.KPI_ID);
             requestQuery.dimensions = _.intersectionWith(requestQuery.dimensions, indicatorDimensions,
                 (e1, e2) => e1.DIMENSION_ID === e2.DIMENSION_ID);
 
-            // TODO: Add time range hard-coding month, day, year...
-
-            // Add all the dimensions to server request parameters
-            let params = requestQuery.dimensions.map(dimension => {
-                return {
-                    name: dimension.DIMENSION_NAME,
-                    value: dimension.DIMENSION_VALUE,
-                    compare: 'LIKE'
-                };
+            let result = await queryFromServer(indicator, requestQuery.dimensions, requestQuery.aggregationTypes);
+            resolve({
+                ...result,
+                indicator,
+                params: requestQuery.dimensions,
+                aggregation: requestQuery.aggregationTypes
             });
-
-            let result = await queryFromServer(indicator, params, requestQuery.aggregationTypes);
-            resolve({...result, indicator, params, aggregation: requestQuery.aggregationTypes});
         } catch (error) {
             reject(error);
         }
