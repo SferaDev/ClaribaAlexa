@@ -4,10 +4,9 @@ import countryDetector from "country-in-text-detector";
 
 import {aggregationTypes, LanguageService} from "./nlp";
 import {AGGREGATION_TYPE, DATE_RANGE, DIMENSION_VALUE, KPI} from "../constants";
-import {getAllDimensionValues, getAllIndicators} from "../data";
+import {getAllDimensionValues, getAllIndicators, getDimensionsByIndicator} from "../data";
 import {queryFromServer} from "../data/connector";
 import {databaseModel} from "../data/databaseModel";
-import {getDimensionsByIndicator} from "../../dist/data";
 
 export let ParserService = function () {
     this.previousQueries = [];
@@ -123,44 +122,35 @@ ParserService.prototype.generateSpokenResponse = function (query, results) {
 
 function makeRequestToServer(question, indicator, query) {
     return new Promise(async function (resolve, reject) {
-        let requestQuery = JSON.parse(JSON.stringify(query));
-        let params = [];
-
-        // Replace country names with country iso3166 codes
-        let countryDimensionIndex = requestQuery.dimensions.findIndex(dimension => dimension.DIMENSION_NAME === 'COUNTRY');
-        if (countryDimensionIndex !== -1) {
-            let detectedDimension = requestQuery.dimensions[countryDimensionIndex];
-            let detectedCountry = countryDetector.detect(question).find(result => result.matches.find(string =>
-                string.toString().toUpperCase() === detectedDimension.DIMENSION_VALUE.toUpperCase()));
-            if (detectedCountry !== undefined)
-                detectedDimension.DIMENSION_VALUE = detectedCountry.iso3166;
-        }
-
-        // Intersect the dimensions to show only the common ones
-        let dimensions_indicators = await getDimensionsByIndicator(indicator.KPI_ID);
-
-        let dimensions_id_query = requestQuery.dimensions.map(dimension => dimension.DIMENSION_ID);
-        let dimensions_id_indicators = dimensions_indicators.map(dimension => dimension.DIMENSION_ID);
-        let dimensions_intersection = _.intersection(dimensions_id_query, dimensions_id_indicators);
-
-        let final_dimensions = [];
-        for (var i = 0; i < dimensions_intersection.length; i++){
-            for (var j = 0; j < requestQuery.dimensions.length; j++){
-                if (dimensions_intersection[i] === requestQuery.dimensions[j].DIMENSION_ID)
-                    final_dimensions.push(requestQuery.dimensions[j]);
-            };
-        };
-
-        //requestQuery.dimensions.forEach(dimension => params.push({
-        final_dimensions.forEach(dimension => params.push({
-            name: dimension.DIMENSION_NAME,
-            value: dimension.DIMENSION_VALUE,
-            compare: 'LIKE'
-        }));
-
-        // TODO: Add time range hard-coding month, day, year...
-
         try {
+            let requestQuery = JSON.parse(JSON.stringify(query));
+
+            // Replace country names with country iso3166 codes
+            let countryDimensionIndex = requestQuery.dimensions.findIndex(dimension => dimension.DIMENSION_NAME === 'COUNTRY');
+            if (countryDimensionIndex !== -1) {
+                let detectedDimension = requestQuery.dimensions[countryDimensionIndex];
+                let detectedCountry = countryDetector.detect(question).find(result => result.matches.find(string =>
+                    string.toString().toUpperCase() === detectedDimension.DIMENSION_VALUE.toUpperCase()));
+                if (detectedCountry !== undefined)
+                    detectedDimension.DIMENSION_VALUE = detectedCountry.iso3166;
+            }
+
+            // Intersect the dimensions to show only the common ones
+            let indicatorDimensions = await getDimensionsByIndicator(indicator.KPI_ID);
+            requestQuery.dimensions = _.intersectionWith(requestQuery.dimensions, indicatorDimensions,
+                (e1, e2) => e1.DIMENSION_ID === e2.DIMENSION_ID);
+
+            // TODO: Add time range hard-coding month, day, year...
+
+            // Add all the dimensions to server request parameters
+            let params = requestQuery.dimensions.map(dimension => {
+                return {
+                    name: dimension.DIMENSION_NAME,
+                    value: dimension.DIMENSION_VALUE,
+                    compare: 'LIKE'
+                };
+            });
+
             let result = await queryFromServer(indicator, params, requestQuery.aggregationTypes);
             resolve({...result, indicator, params, aggregation: requestQuery.aggregationTypes});
         } catch (error) {
