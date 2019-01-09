@@ -173,6 +173,5 @@ function makeRequestToServer(question, indicator, query) {
         } catch (error) {
             reject(error);
         }
-
     });
 }
