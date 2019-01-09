@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import converter from "number-to-words";
 import countryDetector from "country-in-text-detector";
 
@@ -6,6 +7,7 @@ import {AGGREGATION_TYPE, DATE_RANGE, DIMENSION_VALUE, KPI} from "../constants";
 import {getAllDimensionValues, getAllIndicators} from "../data";
 import {queryFromServer} from "../data/connector";
 import {databaseModel} from "../data/databaseModel";
+import {getDimensionsByIndicator} from "../../dist/data";
 
 export let ParserService = function () {
     this.previousQueries = [];
@@ -134,30 +136,23 @@ function makeRequestToServer(question, indicator, query) {
                 detectedDimension.DIMENSION_VALUE = detectedCountry.iso3166;
         }
 
-        // TODO: Filter out those dimensions that are not found in the indicator
-        /*console.log(requestQuery.dimensions);
-        console.log('--------------------------')
-        let dimensions_indicator = await getDimensionsByIndicator(indicator.KPI_ID);
-        console.log(dimensions_indicator);
+        // Intersect the dimensions to show only the common ones
+        let dimensions_indicators = await getDimensionsByIndicator(indicator.KPI_ID);
 
         let dimensions_id_query = requestQuery.dimensions.map(dimension => dimension.DIMENSION_ID);
-        let dimensions_id_indicator = dimensions_indicator.map(dimension => dimension.DIMENSION_ID);
-        let dimensions_intersection = _.intersection(dimensions_id_query, dimensions_id_indicator);
-        console.log(dimensions_intersection);
+        let dimensions_id_indicators = dimensions_indicators.map(dimension => dimension.DIMENSION_ID);
+        let dimensions_intersection = _.intersection(dimensions_id_query, dimensions_id_indicators);
 
-        let final_filter = new Array();
+        let final_dimensions = [];
         for (var i = 0; i < dimensions_intersection.length; i++){
             for (var j = 0; j < requestQuery.dimensions.length; j++){
-                if (dimensions_intersection[i] === requestQuery.dimensions[j].DIMENSION_ID){
-                    final_filter.prototype.push(requestQuery.dimension[j]);
-                    console.log('intro');
-                }
+                if (dimensions_intersection[i] === requestQuery.dimensions[j].DIMENSION_ID)
+                    final_dimensions.push(requestQuery.dimensions[j]);
             };
         };
 
-        //console.log(final_filter);*/
-
-        requestQuery.dimensions.forEach(dimension => params.push({
+        //requestQuery.dimensions.forEach(dimension => params.push({
+        final_dimensions.forEach(dimension => params.push({
             name: dimension.DIMENSION_NAME,
             value: dimension.DIMENSION_VALUE,
             compare: 'LIKE'
