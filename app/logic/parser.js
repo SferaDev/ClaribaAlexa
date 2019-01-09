@@ -121,37 +121,35 @@ ParserService.prototype.generateSpokenResponse = function (query, results) {
 
 function makeRequestToServer(question, indicator, query) {
     return new Promise(async function (resolve, reject) {
+        let requestQuery = JSON.parse(JSON.stringify(query));
         let params = [];
 
-        // TODO: Deep copy
-        // countryDetector.detect("Hello, I come from Germany!");
-        // { iso3166: 'DE', name: 'Germany', type: 'country', matches: [ 'Germany' ] }
-
-        let index = query.dimensions.findIndex(dimension => dimension.DIMENSION_NAME === 'COUNTRY');
-        if (index !== -1) {
-            let country_value = query.dimensions[index].DIMENSION_VALUE;
-            let detector = countryDetector.detect(question);
-            //console.log(detector[0].iso3166);
-            query.dimensions[index].DIMENSION_VALUE = detector[0].iso3166;
+        // Replace country names with country iso3166 codes
+        let countryDimensionIndex = requestQuery.dimensions.findIndex(dimension => dimension.DIMENSION_NAME === 'COUNTRY');
+        if (countryDimensionIndex !== -1) {
+            let detectedDimension = requestQuery.dimensions[countryDimensionIndex];
+            let detectedCountry = countryDetector.detect(question).find(result => result.matches.find(string =>
+                string.toString().toUpperCase() === detectedDimension.DIMENSION_VALUE.toUpperCase()));
+            if (detectedCountry !== undefined)
+                detectedDimension.DIMENSION_VALUE = detectedCountry.iso3166;
         }
 
         // TODO: Filter out those dimensions that are not found in the indicator
-
-        /*console.log(query.dimensions);
+        /*console.log(requestQuery.dimensions);
         console.log('--------------------------')
         let dimensions_indicator = await getDimensionsByIndicator(indicator.KPI_ID);
         console.log(dimensions_indicator);
 
-        let dimensions_id_query = query.dimensions.map(dimension => dimension.DIMENSION_ID);
+        let dimensions_id_query = requestQuery.dimensions.map(dimension => dimension.DIMENSION_ID);
         let dimensions_id_indicator = dimensions_indicator.map(dimension => dimension.DIMENSION_ID);
         let dimensions_intersection = _.intersection(dimensions_id_query, dimensions_id_indicator);
         console.log(dimensions_intersection);
 
         let final_filter = new Array();
         for (var i = 0; i < dimensions_intersection.length; i++){
-            for (var j = 0; j < query.dimensions.length; j++){
-                if (dimensions_intersection[i] === query.dimensions[j].DIMENSION_ID){
-                    final_filter.prototype.push(query.dimension[j]);
+            for (var j = 0; j < requestQuery.dimensions.length; j++){
+                if (dimensions_intersection[i] === requestQuery.dimensions[j].DIMENSION_ID){
+                    final_filter.prototype.push(requestQuery.dimension[j]);
                     console.log('intro');
                 }
             };
@@ -159,7 +157,7 @@ function makeRequestToServer(question, indicator, query) {
 
         //console.log(final_filter);*/
 
-        query.dimensions.forEach(dimension => params.push({
+        requestQuery.dimensions.forEach(dimension => params.push({
             name: dimension.DIMENSION_NAME,
             value: dimension.DIMENSION_VALUE,
             compare: 'LIKE'
@@ -168,8 +166,8 @@ function makeRequestToServer(question, indicator, query) {
         // TODO: Add time range hard-coding month, day, year...
 
         try {
-            let result = await queryFromServer(indicator, params, query.aggregationTypes);
-            resolve({...result, indicator, params, aggregation: query.aggregationTypes});
+            let result = await queryFromServer(indicator, params, requestQuery.aggregationTypes);
+            resolve({...result, indicator, params, aggregation: requestQuery.aggregationTypes});
         } catch (error) {
             reject(error);
         }
