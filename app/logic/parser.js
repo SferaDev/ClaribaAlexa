@@ -92,7 +92,7 @@ ParserService.prototype.generateSpokenResponse = function (query, results) {
     let response = [];
 
     results.forEach(result => {
-        let partial = {spoken: ''};
+        let partial = {valid: true, spoken: ''};
         partial.spoken += 'These are the results for indicator ' + result.indicator.KPI_NAME + ' ';
         for (let i = 0; i < query.dimensions.length; ++i) {
             if (i === 0) partial.spoken += 'in ';
@@ -114,7 +114,7 @@ ParserService.prototype.generateSpokenResponse = function (query, results) {
     });
 
     if (response.length === 0) {
-        response.push({spoken: 'Sorry, I could not find any relevant information for your query.'});
+        response.push({valid: false, spoken: 'Sorry, I could not find any relevant information for your query.'});
     }
 
     return response;
