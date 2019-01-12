@@ -11,4 +11,9 @@ const databaseSchema = new mongoose.Schema({
     }
 }, baseOptions);
 
+export async function getLastDatabaseEntry() {
+    let result = await databaseModel.find().limit(1).sort({$natural: -1});
+    return result[0];
+}
+
 export const databaseModel = mongoose.model('Query', databaseSchema);

@@ -6,10 +6,9 @@ import {aggregationTypes, LanguageService} from "./nlp";
 import {AGGREGATION_TYPE, DATE_RANGE, DIMENSION_VALUE, KPI} from "../constants";
 import {getAllDimensionValues, getAllIndicators, getDimensionsByIndicator} from "../data";
 import {queryFromServer} from "../data/connector";
-import {databaseModel} from "../data/databaseModel";
+import {databaseModel, getLastDatabaseEntry} from "../data/databaseModel";
 
 export let ParserService = function () {
-    this.previousQueries = [];
 };
 
 ParserService.prototype.init = async function () {
@@ -24,9 +23,6 @@ ParserService.prototype.parse = async function (question) {
     let query = await this.parseQuestion(question);
     let results = await this.obtainResults(question, query);
     let response = this.generateSpokenResponse(query, results);
-
-    // Add current query to previousQueries stack
-    this.previousQueries.unshift(query);
 
     let result = {
         query: {question, ...query},
@@ -67,20 +63,19 @@ ParserService.prototype.parseQuestion = async function (question) {
 
 ParserService.prototype.obtainResults = async function (question, query) {
     let results = [];
-
     try {
-        // TODO: Context aware, get previous query dimensions
+        let lastQuery = (await getLastDatabaseEntry()).data.query;
         if (query.dimensions.length === 0) {
+            // If user does not provide dimensions, re-use the previous ones
+            query.dimensions = lastQuery.dimensions;
+        } else if (query.indicators.length === 0) {
+            // If user does not provide any indicator, re-use the last one
+            query.indicators = lastQuery.indicators;
         }
 
-        if (query.indicators.length > 0) {
-            // For each indicator compute a database query and build a result
-            let promises = query.indicators.map(indicator => makeRequestToServer(question, indicator, query));
-            results = await Promise.all(promises);
-
-        } else {
-            // TODO: Context aware (As there are no indicators found use the previous query)
-        }
+        // For each indicator compute a database query and build a result
+        let promises = query.indicators.map(indicator => makeRequestToServer(question, indicator, query));
+        results = await Promise.all(promises);
     } catch (error) {
         console.error(error);
     }

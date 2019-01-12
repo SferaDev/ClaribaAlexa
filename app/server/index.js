@@ -18,7 +18,7 @@ mongoose.connect(MONGODB_URI, function (error) {
 });
 
 Webhook.listen(port, () => {
-    console.log(`Example server listening on port ${port}!`);
+    console.log(`Server listening on port ${port}`);
 });
 
 Webhook.use('/', express.static('docs'));
