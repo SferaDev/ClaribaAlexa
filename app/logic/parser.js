@@ -133,8 +133,6 @@ function makeRequestToServer(question, indicator, query) {
                     detectedDimension.DIMENSION_VALUE = detectedCountry.iso3166;
             }
 
-            // TODO: Add time range hard-coding month, day, year...
-
             // Intersect the dimensions to show only the shared ones
             let indicatorDimensions = await getDimensionsByIndicator(indicator.KPI_ID);
             requestQuery.dimensions = _.intersectionWith(requestQuery.dimensions, indicatorDimensions,
