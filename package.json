@@ -10,18 +10,20 @@
     "babel-preset-env": "~1.6.1",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-stage-2": "^6.24.1",
+    "cors": "^2.8.5",
     "country-in-text-detector": "^1.0.10",
     "express": "latest",
     "jovo-cli": "^1.2.11",
     "jovo-framework": "^1.4.19",
+    "lodash": "latest",
+    "moment": "^2.23.0",
     "mongoose": "^5.4.2",
     "node-nlp": "^2.3.0",
     "nodemon": "^1.18.7",
     "number-to-words": "^1.2.4",
     "swagger-ui-express": "^4.0.1",
     "vorpal": "^1.12.0",
-    "yamljs": "^0.3.0",
-    "lodash": "latest"
+    "yamljs": "^0.3.0"
   },
   "devDependencies": {},
   "scripts": {
