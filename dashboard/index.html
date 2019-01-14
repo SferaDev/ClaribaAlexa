@@ -223,7 +223,16 @@
                 parent.innerHTML += generate_sentence(data.response[0].spoken, "warning");
             } else {
                 parent.innerHTML += generate_sentence(data.question, "success");
-                parent.innerHTML += generate_sentence(data.response[0].spoken, "info");
+                if(!data.response[0].spoken){
+                    parent.innerHTML += generate_sentence(data.response[0].spoken, "info");
+                } else {
+                    var dimensions = data.query.indicators;
+                    var s = data.query.indicators[0].KPI_NAME; 
+                    for(var j=0; j<dimensions.length; ++j) {
+                        s += dimensions[j].DIMENSION_NAME + ' ' + dimensions[j].DIMENSION_VALUE;
+                    }
+                    parent.innerHTML += generate_sentence(s, "info");
+                }
                 parent.innerHTML += generate_label("Result", data.response[0].sum);
                 parent.innerHTML += generate_label("Avarage", Math.round( data.response[0].avg * 100 ) / 100);
                 parent.innerHTML += generate_label("Minimum", data.response[0].min);
