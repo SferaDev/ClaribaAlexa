@@ -88,7 +88,9 @@ ParserService.prototype.generateSpokenResponse = function (query, results) {
 
     results.forEach(result => {
         let partial = {valid: true, spoken: ''};
-        partial.spoken += 'These are the results for indicator ' + result.indicator.KPI_NAME + ' ';
+        partial.spoken += 'These are the ';
+        if (result.aggregation.length > 0) partial.spoken += result.aggregation[0].name + ' ';
+        partial.spoken += 'results for indicator ' + result.indicator.KPI_NAME + ' ';
         for (let i = 0; i < query.dimensions.length; ++i) {
             if (i === 0) partial.spoken += 'in ';
             else if (i === query.dimensions.length - 1) partial.spoken += 'and ';
