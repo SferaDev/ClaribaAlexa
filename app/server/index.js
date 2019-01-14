@@ -4,6 +4,7 @@ import {Webhook} from 'jovo-framework';
 import swaggerUi from 'swagger-ui-express';
 import yaml from 'yamljs';
 import mongoose from 'mongoose';
+import cors from "cors";
 
 import {app} from '../app';
 import {router} from './router';
@@ -16,6 +17,8 @@ mongoose.connect(MONGODB_URI, function (error) {
     if (error) console.error(error);
     else console.log('MongoDB connected');
 });
+
+Webhook.use(cors());
 
 Webhook.listen(port, () => {
     console.log(`Server listening on port ${port}`);
