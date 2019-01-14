@@ -97,14 +97,8 @@
 	var template_label = $('script[data-template="label"]').text().split(/\$\{(.+?)\}/g);
 	var template_sentence = $('script[data-template="sentence"]').text().split(/\$\{(.+?)\}/g);
 	//var template_graph = $('script[data-template="graph"]').text().split(/\$\{(.+?)\}/g);
-    
-    var get_json = $.getJSON( "json_example.json", function(data) {
-        generate_html_from_json(data, true, 'frequent_queries');
-        //generate_html_from_json(frequent_queries_obj, false, 'last_queries');
-    });
-    //$.getJSON( "json_example.json", function(data) {
-    //    generate_html_from_json(frequent_queries_obj, false, 'last_queries');
-    //});
+      
+
     
     sentence_classes = ["success", "warning", "danger", "info"];
     
@@ -217,37 +211,30 @@
         
     }
 
-    function generate_html_from_json(json_obj, compressed, parent_id) {
-        var queries = json_obj.queries;
-        var parent = document.getElementById(parent_id);
-        if(compressed) {
-            for(var i=0; i<queries.length; ++i) {
-                switch(queries[i].type) {
-                    case "label":
-                        parent.innerHTML += generate_label(queries[i].sentence, queries[i].value);
-                        break;
-                    case "graph":
-                        parent.innerHTML += generate_small_graph(queries[i].sentence, "", parent_id+'_'+i);
-                        populate_small_graph(parent_id+'_'+i, queries[i].value);
-                        break;
-                }
-            }
-        } else {
-            for(var i=0; i<queries.length; ++i) {
-                var sentence_class = queries[i].correct ? sentence_classes[0] : sentence_classes[2];
-                parent.innerHTML += generate_sentence(queries[i].sentence, sentence_class);
-                switch(queries[i].type) {
-                    case "label":
-                        parent.innerHTML += generate_label(queries[i].sentence, queries[i].value);
-                        break;
-                    case "graph":
-                        break;
-                    case "grid":
-                        break;
-                }
+    var lastId = -1;
+    function load_recent(json_obj) {
+        var parent = document.getElementById("recent_parent");
+        for(var i=0; i<json_obj.length; ++i) {
+            var query = json_obj[i];
+            var data = query.data;
+
+            lastId = query._id;
+            if(!data.question){
+                parent.innerHTML += generate_sentence(data.response[0].spoken, "warning");
+            } else {
+                parent.innerHTML += generate_sentence(data.question, "success");
+                parent.innerHTML += generate_sentence(data.response[0].spoken, "info");
+                parent.innerHTML += generate_label("Result", data.response[0].sum);
+                parent.innerHTML += generate_label("Avarage", Math.round( data.response[0].avg * 100 ) / 100);
+                parent.innerHTML += generate_label("Minimum", data.response[0].min);
+                parent.innerHTML += generate_label("Maximum", data.response[0].max);
             }
         }
     }
+    var get_json = $.getJSON( "http://clariba-genie.herokuapp.com/api/recent", function(data) {
+        load_recent(data, true, 'last_queries');
+        //generate_html_from_json(frequent_queries_obj, false, 'last_queries');
+    });  
 </script>
 
 <!-- Right Panel -->
@@ -301,6 +288,7 @@
                     </div>
                 </div>
             </div>
+            
             <div class="col-sm-8">
                 <div class="page-header float-right">
                     <div class="page-title">
@@ -313,9 +301,10 @@
         </div>
 
         
-        <div id="last_queries" class="content mt-3">
+        <div id="recent_parent" class="content mt-3">
 
-            <!-- Chart half width screen -->
+
+            <!-- Chart half width screen 
             <div class="col-xl-6">
                 <div class="card">
                     <div class="card-body">
@@ -324,8 +313,7 @@
                                 <h4 class="card-title mb-0">Traffic</h4>
                                 <div class="small text-muted">October 2017</div>
                             </div>
-                            <!--/.col-->
-                        </div><!--/.row-->
+                        </div>
                         <div class="chart-wrapper mt-4" >
                             <canvas id="trafficChart" style="height:200px;" height="200"></canvas>
                             <script src="assets/js/dashboard.js"></script>
@@ -372,7 +360,7 @@
                         </ul>
                     </div>
                 </div>
-            </div>
+            </div> -->
 
         </div>
     </div>
