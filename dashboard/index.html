@@ -70,11 +70,9 @@
     <div class="col-sm-12">
         <div class="alert alert-${class} alert-dismissible fade show" role="alert">
             ${sentence}
-            <!--
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-            -->
         </div>
     </div>
 </script>
@@ -102,7 +100,7 @@
     var template_sentence = $('script[data-template="sentence"]').text().split(/\$\{(.+?)\}/g);
     //var template_graph = $('script[data-template="graph"]').text().split(/\$\{(.+?)\}/g);
 
-    sentence_classes = ["success", "warning", "danger", "info"];
+    var sentence_classes = ["success", "warning", "danger", "info"];
 
     function generate_small_graph(sentence, value, graph_id) {
         var html = [];
@@ -115,7 +113,6 @@
         html[6] = template_small_graph[6];
         return html.join('');
     }
-
     function populate_small_graph(graph_id, graph_values) {
         var graph_labels = [];
         var graph_numbers = [];
@@ -189,7 +186,6 @@
             }
         });
     }
-
     function generate_sentence(sentence, sentence_class) {
         var html = [];
         html[0] = template_sentence[0];
@@ -199,7 +195,6 @@
         html[4] = template_sentence[4];
         return html.join('');
     }
-
     function generate_label(title, value) {
         var html = [];
         html[0] = template_label[0];
@@ -209,27 +204,22 @@
         html[4] = template_label[4];
         return html.join('');
     }
-
     function generate_grid() {
 
     }
-
     function generate_graph() {
 
     }
 
-    let lastId = -1;
-
     function load_recent(json_obj) {
-        let parent = document.getElementById("recent_parent");
-        for (let i = 0; i < json_obj.length; ++i) {
-            let query = json_obj[i];
-            let data = query.data;
-            lastId = query._id;
+        var parent = document.getElementById("frequent_queries");
+        for (var i = 0; i < json_obj.length; ++i) {
+            var query = json_obj[i];
+            var data = query.data;
 
-            for (let j = 0; j < data.response.length; ++j) {
+            for (var j = 0; j < data.response.length; ++j) {
                 if (data.response[j].valid) {
-                    let title = 'Indicator ' + data.results[j].indicator.KPI_NAME + ' with dimensions: ' +
+                    var title = 'Indicator ' + data.results[j].indicator.KPI_NAME + ' with dimensions: ' +
                         data.results[j].params.map(e => e.DIMENSION_NAME + ' ' + e.DIMENSION_VALUE).join(', ');
                     parent.innerHTML += generate_sentence(title, "info");
 
@@ -246,10 +236,48 @@
         }
     }
 
-    $.getJSON("http://clariba-genie.herokuapp.com/api/recent", function (data) {
-        load_recent(data, true, 'last_queries');
-        //generate_html_from_json(frequent_queries_obj, false, 'last_queries');
-    });
+    var lastId = -1;
+    
+    function check_recent(json_obj) {
+        var updated = false;
+        var stop = false;
+        var text = '';
+
+        for (var i = 0; (i < json_obj.length) && !stop; ++i) {
+            var query = json_obj[i];
+            var data = query.data;
+            if(lastId >= query._id) {
+                stop = true;
+            } else {
+            
+                updated = true;
+                for (var j = 0; j < data.response.length; ++j) {
+                    if (data.response[j].valid) {
+                        var sentence = 'Indicator ' + data.results[j].indicator.KPI_NAME + ' with dimensions: ' +
+                            data.results[j].params.map(e => e.DIMENSION_NAME + ' ' + e.DIMENSION_VALUE).join(', ');
+                        text += generate_sentence(sentence, "info");
+
+                        if (data.response[j].value !== undefined) {
+                            text += generate_label("Value", data.response[j].value[0]);
+                        } else {
+                            text += generate_label("Sum", data.response[j].sum);
+                            text += generate_label("Average", Math.round(data.response[j].avg * 100) / 100);
+                            text += generate_label("Minimum", data.response[j].min);
+                            text += generate_label("Maximum", data.response[j].max);
+                        }
+                    }
+                }
+
+            }
+        }
+
+        if(updated) {
+            var parent = document.getElementById("recent_parent");
+            parent.innerHTML = text + parent.innerHTML;
+            lastId = json_obj[0]._id;
+        }
+    }
+
 </script>
 
 <!-- Right Panel -->
@@ -290,7 +318,9 @@
     <!-- Most frequent queries entries -->
     <div class="content mt-3" id="frequent_queries">
         <script>
-
+            $.getJSON("http://clariba-genie.herokuapp.com/api/recent", function (data) {
+                load_recent(data);
+            });
         </script>
     </div>
 
@@ -317,7 +347,15 @@
 
 
     <div class="content mt-3" id="recent_parent">
-
+        <script>
+                    check_recent(data);
+            /*
+            setInterval(function(){ 
+                $.getJSON("http://clariba-genie.herokuapp.com/api/recent", function (data) {
+                });
+            }, 5000);
+            */
+        </script>
 
         <!-- Chart half width screen
         <div class="col-xl-6">
