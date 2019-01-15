@@ -72,15 +72,15 @@
 <script data-template="sentence" type="text/template">
     <div class="col-sm-12">
         <div class="alert alert-${class} alert-dismissible fade show" role="alert">
-            <span> 
+            <span id="id_sentence"> 
                 ${sentence}
             </span>
             
-            <span class="claribaHidden"> 
+            <span id="id_hidden" class="claribaHidden"> 
                 ${hidden}
             </span>
 
-            <span class="close">
+            <span id="id_eye" class="close">
                 <span class="ti-eye"></span>
             </span>
         </div>
@@ -236,7 +236,7 @@
                 if (data.response[j].valid) {
                     var title = 'Indicator ' + data.results[j].indicator.KPI_NAME + ' with dimensions: ' +
                         data.results[j].params.map(e => e.DIMENSION_NAME + ' ' + e.DIMENSION_VALUE).join(', ');
-                    var hidden = "Hidden sentence";
+                    var hidden = data.query.question;
                     parent.innerHTML += generate_sentence(title, hidden,"info");
 
                     if (data.response[j].value !== undefined) {
@@ -271,15 +271,16 @@
                     if (data.response[j].valid) {
                         var sentence = 'Indicator ' + data.results[j].indicator.KPI_NAME + ' with dimensions: ' +
                             data.results[j].params.map(e => e.DIMENSION_NAME + ' ' + e.DIMENSION_VALUE).join(', ');
-                        text += generate_sentence(sentence, "info");
+                        var hidden = data.query.question;
+                        text += generate_sentence(sentence, hidden, "info");
 
                         if (data.response[j].value !== undefined) {
-                            text += generate_label("Value", data.response[j].value[0]);
+                            text += generate_label(label_classes[0], "Value", data.response[j].value[0]);
                         } else {
-                            text += generate_label("Sum", data.response[j].sum);
-                            text += generate_label("Average", Math.round(data.response[j].avg * 100) / 100);
-                            text += generate_label("Minimum", data.response[j].min);
-                            text += generate_label("Maximum", data.response[j].max);
+                            text += generate_label(label_classes[0], "Sum", data.response[j].sum);
+                            text += generate_label(label_classes[1], "Average", Math.round(data.response[j].avg * 100) / 100);
+                            text += generate_label(label_classes[2], "Minimum", data.response[j].min);
+                            text += generate_label(label_classes[3], "Maximum", data.response[j].max);
                         }
                     }
                 }
