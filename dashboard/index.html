@@ -17,6 +17,7 @@
     <link rel="apple-touch-icon" href="apple-icon.png">
     <link rel="shortcut icon" href="favicon.ico">
 
+    <link rel="stylesheet" href="assets/css/clariba.css">
     <link rel="stylesheet" href="assets/css/normalize.css">
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/font-awesome.min.css">
@@ -66,24 +67,33 @@
 </script>
 
 <!-- ${sentence} -->
+<!-- data-dismiss="alert" -->
+<!-- aria-hidden="true" -->
 <script data-template="sentence" type="text/template">
     <div class="col-sm-12">
         <div class="alert alert-${class} alert-dismissible fade show" role="alert">
-            ${sentence}
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+            <span> 
+                ${sentence}
+            </span>
+            
+            <span class="claribaHidden"> 
+                ${hidden}
+            </span>
+
+            <span class="close">
+                <span class="ti-eye"></span>
+            </span>
         </div>
     </div>
 </script>
 
-<!-- ${title} ${value} -->
+<!-- ${icon_class} ${title} ${value} -->
 <script data-template="label" type="text/template">
     <div class="col-xl-3 col-lg-6">
         <div class="card">
             <div class="card-body">
                 <div class="stat-widget-one">
-                    <div class="stat-icon dib"><i class="ti-money text-primary border-primary"></i></div>
+                    <div class="stat-icon dib"><i class="${icon_class} text-primary border-primary"></i></div>
                     <div class="stat-content dib">
                         <div class="stat-text"> ${title}</div>
                         <div class="stat-digit"> ${value}</div>
@@ -101,6 +111,7 @@
     //var template_graph = $('script[data-template="graph"]').text().split(/\$\{(.+?)\}/g);
 
     var sentence_classes = ["success", "warning", "danger", "info"];
+    var label_classes = ["ti-money", "ti-exchange-vertical", "ti-arrow-down", "ti-arrow-up"];
 
     function generate_small_graph(sentence, value, graph_id) {
         var html = [];
@@ -186,22 +197,26 @@
             }
         });
     }
-    function generate_sentence(sentence, sentence_class) {
+    function generate_sentence(sentence, sentence_hidden, sentence_class) {
         var html = [];
         html[0] = template_sentence[0];
         html[1] = sentence_class;
         html[2] = template_sentence[2];
         html[3] = sentence;
         html[4] = template_sentence[4];
+        html[5] = sentence_hidden;
+        html[6] = template_sentence[6];
         return html.join('');
     }
-    function generate_label(title, value) {
+    function generate_label(icon_class, title, value) {
         var html = [];
         html[0] = template_label[0];
-        html[1] = title;
+        html[1] = icon_class;
         html[2] = template_label[2];
-        html[3] = value;
+        html[3] = title;
         html[4] = template_label[4];
+        html[5] = value;
+        html[6] = template_label[6];
         return html.join('');
     }
     function generate_grid() {
@@ -211,7 +226,7 @@
 
     }
 
-    function load_recent(json_obj) {
+    function load_frequent(json_obj) {
         var parent = document.getElementById("frequent_queries");
         for (var i = 0; i < json_obj.length; ++i) {
             var query = json_obj[i];
@@ -221,15 +236,16 @@
                 if (data.response[j].valid) {
                     var title = 'Indicator ' + data.results[j].indicator.KPI_NAME + ' with dimensions: ' +
                         data.results[j].params.map(e => e.DIMENSION_NAME + ' ' + e.DIMENSION_VALUE).join(', ');
-                    parent.innerHTML += generate_sentence(title, "info");
+                    var hidden = "Hidden sentence";
+                    parent.innerHTML += generate_sentence(title, hidden,"info");
 
                     if (data.response[j].value !== undefined) {
-                        parent.innerHTML += generate_label("Value", data.response[j].value[0]);
+                        parent.innerHTML += generate_label(label_classes[0], "Value", data.response[j].value[0]);
                     } else {
-                        parent.innerHTML += generate_label("Sum", data.response[j].sum);
-                        parent.innerHTML += generate_label("Average", Math.round(data.response[j].avg * 100) / 100);
-                        parent.innerHTML += generate_label("Minimum", data.response[j].min);
-                        parent.innerHTML += generate_label("Maximum", data.response[j].max);
+                        parent.innerHTML += generate_label(label_classes[0], "Sum", data.response[j].sum);
+                        parent.innerHTML += generate_label(label_classes[1], "Average", Math.round(data.response[j].avg * 100) / 100);
+                        parent.innerHTML += generate_label(label_classes[2], "Minimum", data.response[j].min);
+                        parent.innerHTML += generate_label(label_classes[3], "Maximum", data.response[j].max);
                     }
                 }
             }
@@ -319,7 +335,7 @@
     <div class="content mt-3" id="frequent_queries">
         <script>
             $.getJSON("http://clariba-genie.herokuapp.com/api/recent", function (data) {
-                load_recent(data);
+                load_frequent(data);
             });
         </script>
     </div>
@@ -348,10 +364,10 @@
 
     <div class="content mt-3" id="recent_parent">
         <script>
-                    check_recent(data);
             /*
             setInterval(function(){ 
                 $.getJSON("http://clariba-genie.herokuapp.com/api/recent", function (data) {
+                    check_recent(data);
                 });
             }, 5000);
             */
