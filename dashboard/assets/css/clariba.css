@@ -5,3 +5,7 @@
 .claribaHidden {
     display: none;
 }
+
+.no-events {
+    pointer-events: none;
+}

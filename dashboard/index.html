@@ -72,16 +72,16 @@
 <script data-template="sentence" type="text/template">
     <div class="col-sm-12">
         <div class="alert alert-${class} alert-dismissible fade show" role="alert">
-            <span id="id_sentence"> 
+            <span> 
                 ${sentence}
             </span>
             
-            <span id="id_hidden" class="claribaHidden"> 
+            <span class="claribaHidden"> 
                 ${hidden}
             </span>
 
-            <span id="id_eye" class="close">
-                <span class="ti-eye"></span>
+            <span class="close" onmouseenter="show_hidden(this)" onmouseout="hide_hidden(this)">
+                <span class="ti-eye  no-events"></span>
             </span>
         </div>
     </div>
@@ -295,6 +295,16 @@
         }
     }
 
+    function show_hidden(elem){
+        var spans = elem.parentElement.childNodes;
+        spans[1].classList.add("claribaHidden");
+        spans[3].classList.remove("claribaHidden");
+    }
+    function hide_hidden(elem){
+        var spans = elem.parentElement.childNodes;
+        spans[3].classList.add("claribaHidden");
+        spans[1].classList.remove("claribaHidden");      
+    }
 </script>
 
 <!-- Right Panel -->
