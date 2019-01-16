@@ -80,8 +80,13 @@
                 ${hidden}
             </span>
 
-            <span class="close" onmouseenter="show_hidden(this)" onmouseout="hide_hidden(this)">
-                <span class="ti-eye  no-events"></span>
+            <span class="right">
+                <span class="close" onmouseenter="show_hidden(this)" onmouseout="hide_hidden(this)">
+                    <span class="ti-eye  no-events"></span>
+                </span>
+                <span class="expand">
+                    <span class="ti-angle-down no-events"></span>
+                </span>
             </span>
         </div>
     </div>
@@ -296,14 +301,17 @@
     }
 
     function show_hidden(elem){
-        var spans = elem.parentElement.childNodes;
+        var spans = elem.parentElement.parentElement.childNodes;
         spans[1].classList.add("claribaHidden");
         spans[3].classList.remove("claribaHidden");
     }
     function hide_hidden(elem){
-        var spans = elem.parentElement.childNodes;
+        var spans = elem.parentElement.parentElement.childNodes;
         spans[3].classList.add("claribaHidden");
         spans[1].classList.remove("claribaHidden");      
+    }
+    function show_more(elem){
+        
     }
 </script>
 

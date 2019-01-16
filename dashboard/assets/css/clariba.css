@@ -1,11 +1,51 @@
 .claribaShown {
-    height: 10;
-}
-
+    height: 10; }
 .claribaHidden {
-    display: none;
-}
+    display: none;}
 
 .no-events {
-    pointer-events: none;
+    pointer-events: none;}
+
+.right {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 128px;
 }
+
+.expand {
+    display: none;
+    float: right;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1;
+    color: #000;
+    text-shadow: 0 1px 0 #fff;
+    opacity: .5;
+  }
+  
+  .expand:focus, .expand:hover {
+    color: #000;
+    text-decoration: none;
+    opacity: .75;
+  }
+  
+  .expand:not([disabled]):not(.disabled) {
+    cursor: pointer;
+  }
+  
+  button.expand {
+    padding: 0;
+    background-color: transparent;
+    border: 0;
+    -webkit-appearance: none;
+  }
+
+.alert-dismissible .expand {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 0.75rem 1.25rem;
+    color: inherit;
+  }
