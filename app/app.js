@@ -20,7 +20,7 @@ parserService.init().then(() => {
                 result.response.forEach(response => {
                     speech.addText(response.spoken);
                 });
-                this.tell(speech);
+                this.ask(speech);
             });
         },
         'Unhandled': function () {
