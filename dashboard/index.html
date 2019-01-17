@@ -224,16 +224,10 @@
         html[6] = template_label[6];
         return html.join('');
     }
-    function generate_grid() {
-
-    }
-    function generate_graph() {
-
-    }
 
     function load_frequent(json_obj) {
         var parent = document.getElementById("frequent_queries");
-        for (var i = 0; i < json_obj.length; ++i) {
+        for (var i = json_obj.length - 1; i >= 0; --i) {
             var query = json_obj[i];
             var data = query.data;
 
@@ -339,32 +333,36 @@
     </header>
     <!-- Header-->
 
-    <!-- Most frequent queries Section title -->
-    <div class="breadcrumbs">
-        <div class="col-sm-4">
-            <div class="page-header float-left">
-                <div class="page-title">
-                    <h1>Most frequent queries</h1>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Most frequent queries entries -->
-    <div class="content mt-3" id="frequent_queries">
-        <script>
-            $.getJSON("http://clariba-genie.herokuapp.com/api/recent", function (data) {
-                load_frequent(data);
-            });
-        </script>
-    </div>
-
     <!-- Last queries Section title -->
     <div class="breadcrumbs">
         <div class="col-sm-4">
             <div class="page-header float-left">
                 <div class="page-title">
                     <h1>Last queries</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Last queries entries -->
+    <div class="content mt-3" id="recent_parent">
+        <script>
+            /*
+            setInterval(function(){ 
+                $.getJSON("http://clariba-genie.herokuapp.com/api/recent", function (data) {
+                    check_recent(data);
+                });
+            }, 5000);
+            */
+        </script>
+    </div>
+
+    <!-- Most frequent queries Section title -->
+    <div class="breadcrumbs">
+        <div class="col-sm-4">
+            <div class="page-header float-left">
+                <div class="page-title">
+                    <h1>Most frequent queries</h1>
                 </div>
             </div>
         </div>
@@ -381,15 +379,11 @@
     </div>
 
 
-    <div class="content mt-3" id="recent_parent">
+    <div class="content mt-3" id="frequent_queries">
         <script>
-            /*
-            setInterval(function(){ 
-                $.getJSON("http://clariba-genie.herokuapp.com/api/recent", function (data) {
-                    check_recent(data);
-                });
-            }, 5000);
-            */
+            $.getJSON("http://clariba-genie.herokuapp.com/api/recent", function (data) {
+                load_frequent(data);
+            });
         </script>
 
         <!-- Chart half width screen
